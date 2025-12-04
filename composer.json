@@ -1,0 +1,9 @@
+{
+    "name": "att/test-app",
+    "description": "Test application for ATT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}

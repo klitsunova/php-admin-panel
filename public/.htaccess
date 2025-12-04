@@ -1,0 +1,8 @@
+# public/.htaccess
+RewriteEngine On
+RewriteBase /
+
+# Если запрос не файл и не директория
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
