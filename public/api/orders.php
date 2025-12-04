@@ -12,7 +12,7 @@ header('Access-Control-Allow-Headers: Content-Type');
 try {
     $service = new OrderService();
     $data = $service->getFilteredOrders($_GET);
-    
+
     $result = [
         'success' => true,
         'data' => [
@@ -32,9 +32,9 @@ try {
             'stats' => $service->getOrdersStatistics()
         ]
     ];
-    
+
     echo json_encode($result, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-    
+
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([

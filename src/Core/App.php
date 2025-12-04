@@ -12,4 +12,10 @@ class App
         }
         return self::$instance;
     }
+
+    public function isDebug(): bool
+    {
+        return $this->config['debug'] ?? false;
+    }
+
 }

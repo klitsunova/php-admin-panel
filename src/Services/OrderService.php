@@ -9,26 +9,26 @@ class OrderService
 {
     private Database $db;
     private int $perPage = 10;
-    
+
     public function __construct()
     {
         $this->db = Database::getInstance();
     }
-    
+
     public function getFilteredOrders(array $filters = []): array
     {
         $page = max(1, (int)($filters['page'] ?? 1));
         $search = trim($filters['search'] ?? '');
         $sortBy = $this->validateSortColumn($filters['sort'] ?? 'orders.id');
         $sortOrder = $this->validateSortOrder($filters['order'] ?? 'DESC');
-        
+
         $offset = ($page - 1) * $this->perPage;
-        
+
         $countSql = "SELECT COUNT(*) as total 
                      FROM orders 
                      JOIN users ON orders.user_id = users.id 
                      WHERE 1=1";
-        
+
         $dataSql = "SELECT 
                         orders.id,
                         orders.title,
@@ -39,28 +39,28 @@ class OrderService
                     FROM orders 
                     JOIN users ON orders.user_id = users.id 
                     WHERE 1=1";
-        
+
         $params = [];
         $countParams = [];
-        
+
         if ($search !== '') {
             $dataSql .= " AND users.name LIKE ?";
             $countSql .= " AND users.name LIKE ?";
             $params[] = "%{$search}%";
             $countParams[] = "%{$search}%";
         }
-        
+
         $dataSql .= " ORDER BY {$sortBy} {$sortOrder}";
-        
+
         $dataSql .= " LIMIT ? OFFSET ?";
         $params[] = $this->perPage;
         $params[] = $offset;
-        
+
         $ordersData = $this->db->query($dataSql, $params);
-        
+
         $countResult = $this->db->query($countSql, $countParams);
         $total = (int)$countResult[0]['total'] ?? 0;
-        
+
         $orders = [];
         foreach ($ordersData as $data) {
             $order = new Order((array)$data);
@@ -70,7 +70,7 @@ class OrderService
             ]);
             $orders[] = $order;
         }
-        
+
         return [
             'orders' => $orders,
             'pagination' => [
@@ -88,7 +88,7 @@ class OrderService
             ]
         ];
     }
-    
+
     public function getOrdersStatistics(): array
     {
         $sql = "SELECT 
@@ -100,7 +100,7 @@ class OrderService
                     MIN(orders.cost) as min_order
                 FROM users 
                 LEFT JOIN orders ON users.id = orders.user_id";
-        
+
         $result = $this->db->query($sql);
         return $result[0] ?? [];
     }
@@ -113,10 +113,10 @@ class OrderService
             'orders.cost' => 'orders.cost',
             'users.name' => 'users.name'
         ];
-        
+
         return $allowed[$column] ?? 'orders.id';
     }
-    
+
     private function validateSortOrder(string $order): string
     {
         $order = strtoupper($order);

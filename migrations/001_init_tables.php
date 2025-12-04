@@ -16,7 +16,7 @@ try {
             INDEX idx_name (name)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
-    
+
     $db->execute("
         CREATE TABLE IF NOT EXISTS orders (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -30,12 +30,12 @@ try {
             INDEX idx_cost (cost)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
-    
+
     $db->execute("DELETE FROM orders");
     $db->execute("DELETE FROM users");
     $db->execute("ALTER TABLE users AUTO_INCREMENT = 1");
     $db->execute("ALTER TABLE orders AUTO_INCREMENT = 1");
-    
+
     $users = [
         'Александр Иванов',
         'Дмитрий Смирнов',
@@ -133,12 +133,12 @@ try {
     ];
 
     $userIds = [];
-    
+
     foreach ($users as $name) {
         $db->execute("INSERT INTO users (name) VALUES (?)", [$name]);
         $userIds[] = $db->lastInsertId();
     }
-    
+
     $orders = [
         ['Академия здоровья детский санаторий', 78, $userIds[0]],
         ['Алеся санаторий', 121, $userIds[1]],
@@ -234,18 +234,18 @@ try {
         ['Юность санаторий', 113, $userIds[91]],
         ['Юрцево областной госпиталь', 89, $userIds[92]]
     ];
-    
+
     foreach ($orders as $order) {
         $db->execute(
             "INSERT INTO orders (title, cost, user_id) VALUES (?, ?, ?)",
             $order
         );
     }
-    
+
     echo "База данных успешно инициализирована\n";
     echo "Пользователей: " . count($users) . "\n";
     echo "Заказов: " . count($orders) . "\n";
-    
+
 } catch (Exception $e) {
     echo "Ошибка: " . $e->getMessage() . "\n";
     exit(1);
