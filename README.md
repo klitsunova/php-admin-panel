@@ -49,7 +49,13 @@ cd php-admin-panel
 docker-compose up -d
 
 ### Запуск миграций (для dummy данных)
+**cmd**
+
 run-migration.bat
+
+**git bash**
+
+./run-migration.bat
 
 ### Приложение будет доступно по адресу:
 http://localhost:8080
