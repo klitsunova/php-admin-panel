@@ -13,12 +13,25 @@
 
 [Скриншоты](#скриншоты) | [Быстрый старт](#быстрый-старт)
 
+## Возможности
+- таблица просмотра заказов пользователей и стастистики
+- сортировка по столбцам
+- фильтрация по имени пользователя
+- адаптивный дизайн, концепция mobile-first
+- пагинация и горизонтальная полоса прокрутки в таблице
+
 ## Скриншоты
 
 ### Мобильная версия
 
 <img width="386" height="838" alt="{F77EFDCE-70F4-46A5-9A31-B1A67689E0FD}" src="https://github.com/user-attachments/assets/f9f13379-d33d-4115-9d5e-deadb50db4c1" />
-<img width="385" height="837" alt="{C0DDF8C8-DFBA-436D-B92C-CD6557905FE4}" src="https://github.com/user-attachments/assets/e85ae7c1-6aeb-4985-9d35-b6fbafa531df" />
+<img width="385" height="837" alt="{E2E70C3F-D135-4331-864D-1AB128114911}" src="https://github.com/user-attachments/assets/dd2a31e0-bab9-4603-81e5-8c06b0db1dec" />
+
+
+<img width="383" height="832" alt="image" src="https://github.com/user-attachments/assets/8fe5b6f3-12fb-4c1d-b3af-dd8836d9a460" />
+<img width="381" height="836" alt="image" src="https://github.com/user-attachments/assets/2fb4b759-3ef3-488d-a1ff-f83a0d1451d2" />
+
+
 
 ### Десктопная версия
 
