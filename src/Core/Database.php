@@ -15,9 +15,9 @@ class Database
     {
         try {
             $host = $_ENV['DB_HOST'] ?? 'db';
-            $dbname = $_ENV['DB_NAME'] ?? 'att_test_db';
-            $username = $_ENV['DB_USER'] ?? 'root';
-            $password = $_ENV['DB_PASSWORD'] ?? 'root';
+            $dbname = $_ENV['DB_NAME'] ?? 'php_admin_panel_db';
+            $username = $_ENV['DB_USER'] ?? 'app_user';
+            $password = $_ENV['DB_PASSWORD'] ?? 'app_pass';
             $charset = $_ENV['DB_CHARSET'] ?? 'utf8mb4';
 
             $dsn = "mysql:host={$host};dbname={$dbname};charset={$charset}";

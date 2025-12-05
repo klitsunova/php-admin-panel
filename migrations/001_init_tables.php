@@ -4,45 +4,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Core\Database;
 
-$db = Database::getInstance()->getConnection();
 
 try {
-    $db->exec("
-        CREATE DATABASE IF NOT EXISTS `att_test_db` 
-        CHARACTER SET utf8mb4 
-        COLLATE utf8mb4_unicode_ci
-    ");
+    $db = Database::getInstance();
 
-    $db->exec("USE `att_test_db`");
-
-    $db->exec("
-        CREATE TABLE IF NOT EXISTS users (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(100) NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            INDEX idx_name (name)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-    ");
-
-    $db->exec("
-        CREATE TABLE IF NOT EXISTS orders (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            title VARCHAR(200) NOT NULL,
-            cost DECIMAL(10,2) NOT NULL,
-            user_id INT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            INDEX idx_user_id (user_id),
-            INDEX idx_cost (cost)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-    ");
-
-    $db->exec("DELETE FROM orders");
-    $db->exec("DELETE FROM users");
-    $db->exec("ALTER TABLE users AUTO_INCREMENT = 1");
-    $db->exec("ALTER TABLE orders AUTO_INCREMENT = 1");
+    $db->execute("DELETE FROM orders");
+    $db->execute("DELETE FROM users");
+    $db->execute("ALTER TABLE users AUTO_INCREMENT = 1");
+    $db->execute("ALTER TABLE orders AUTO_INCREMENT = 1");
 
     $users = [
         'Александр Иванов',
@@ -143,7 +112,7 @@ try {
     $userIds = [];
 
     foreach ($users as $name) {
-        $db->exec("INSERT INTO users (name) VALUES (?)", [$name]);
+        $db->execute("INSERT INTO users (name) VALUES (?)", [$name]);
         $userIds[] = $db->lastInsertId();
     }
 
@@ -244,7 +213,7 @@ try {
     ];
 
     foreach ($orders as $order) {
-        $db->exec(
+        $db->execute(
             "INSERT INTO orders (title, cost, user_id) VALUES (?, ?, ?)",
             $order
         );
