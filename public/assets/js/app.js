@@ -37,19 +37,6 @@ class OrderTable {
                 });
             });
         }
-
-        if (this.pagination) {
-            this.pagination.addEventListener('click', (e) => {
-                if (e.target.classList.contains('page-link')) {
-                    e.preventDefault();
-                    const page = e.target.dataset.page;
-                    if (page) {
-                        this.currentFilters.page = parseInt(page);
-                        this.loadData();
-                    }
-                }
-            });
-        }
     }
 
     async loadData() {
@@ -57,7 +44,6 @@ class OrderTable {
 
         try {
             const queryString = new URLSearchParams(this.currentFilters).toString();
-            // Меняем endpoint на /api/orders
             const response = await fetch(`/api/orders?${queryString}`);
 
             if (!response.ok) {
@@ -138,31 +124,106 @@ class OrderTable {
         this.pagination.innerHTML = `
             <nav>
                 <ul class="pagination justify-content-center">
-                    <li class="page-item ${paginator.hasPrevious() ? '' : 'disabled'}">
-                        <a class="page-link" href="#" data-page="${pagination.current_page - 1}">
-                            <i class="bi bi-chevron-left"></i>
-                        </a>
-                    </li>
-
+                    ${this.renderPaginationItem('prev', pagination, paginator)}
+                    
                     ${paginator.getLinks().map(link => `
                         <li class="page-item ${link.active ? 'active' : ''}">
-                            <a class="page-link" href="#" data-page="${link.page}">
+                            <a class="page-link" href="javascript:void(0)" data-page="${link.page}">
                                 ${link.page}
                             </a>
                         </li>
                     `).join('')}
-
-                    <li class="page-item ${paginator.hasNext() ? '' : 'disabled'}">
-                        <a class="page-link" href="#" data-page="${pagination.current_page + 1}">
-                            <i class="bi bi-chevron-right"></i>
-                        </a>
-                    </li>
+                    
+                    ${this.renderPaginationItem('next', pagination, paginator)}
                 </ul>
             </nav>
             <div class="text-center text-muted mt-2">
                 Показано ${pagination.from}-${pagination.to} из ${pagination.total}
             </div>
         `;
+
+        this.attachPaginationListeners();
+    }
+
+    attachPaginationListeners() {
+        const oldPagination = this.pagination.cloneNode(true);
+        this.pagination.parentNode.replaceChild(oldPagination, this.pagination);
+        this.pagination = oldPagination;
+
+        this.pagination.addEventListener('click', (e) => {
+            let target = e.target;
+            
+            if (target.tagName === 'I' || target.tagName === 'SPAN') {
+                target = target.closest('.page-link');
+            }
+            
+            if (target && target.classList.contains('page-link') && target.hasAttribute('data-page')) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const parentLi = target.closest('.page-item');
+                if (parentLi && parentLi.classList.contains('disabled')) {
+                    return;
+                }
+                
+                const page = parseInt(target.getAttribute('data-page'));
+                if (page && page !== this.currentFilters.page) {
+                    this.currentFilters.page = page;
+                    this.loadData();
+
+                    this.table.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }
+            }
+        });
+    }
+
+    renderPaginationItem(type, pagination, paginator) {
+        if (type === 'prev') {
+            if (!paginator.hasPrevious()) {
+                return `
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                            <i class="bi bi-chevron-left"></i>
+                        </span>
+                    </li>
+                `;
+            }
+            
+            return `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" 
+                       data-page="${pagination.current_page - 1}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+            `;
+        }
+        
+        if (type === 'next') {
+            if (!paginator.hasNext()) {
+                return `
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                            <i class="bi bi-chevron-right"></i>
+                        </span>
+                    </li>
+                `;
+            }
+            
+            return `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" 
+                       data-page="${pagination.current_page + 1}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            `;
+        }
+        
+        return '';
     }
 
     renderStats(stats) {
@@ -339,18 +400,50 @@ class Paginator {
     }
 
     getLinks(maxLinks = 5) {
-        const links = [];
-        let start = Math.max(1, this.currentPage - Math.floor(maxLinks / 2));
-        let end = Math.min(this.lastPage, start + maxLinks - 1);
+        if (this.lastPage <= maxLinks) {
+            return Array.from({ length: this.lastPage }, (_, i) => ({
+                page: i + 1,
+                active: (i + 1) === this.currentPage
+            }));
+        }
 
-        if (end - start + 1 < maxLinks) {
-            start = Math.max(1, end - maxLinks + 1);
+        const links = [];
+        let start = this.currentPage - Math.floor(maxLinks / 2);
+        let end = this.currentPage + Math.floor(maxLinks / 2);
+
+        if (start < 1) {
+            end += 1 - start;
+            start = 1;
+        }
+        
+        if (end > this.lastPage) {
+            start -= end - this.lastPage;
+            end = this.lastPage;
+        }
+        
+        start = Math.max(1, start);
+
+        if (start > 1) {
+            links.push({ page: 1, active: false });
+            if (start > 2) {
+                links.push({ page: '...', active: false, ellipsis: true });
+            }
         }
 
         for (let i = start; i <= end; i++) {
             links.push({
                 page: i,
                 active: i === this.currentPage
+            });
+        }
+
+        if (end < this.lastPage) {
+            if (end < this.lastPage - 1) {
+                links.push({ page: '...', active: false, ellipsis: true });
+            }
+            links.push({ 
+                page: this.lastPage, 
+                active: this.lastPage === this.currentPage 
             });
         }
 

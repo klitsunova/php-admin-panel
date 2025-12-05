@@ -131,6 +131,7 @@ body {
     color: var(--gray-800);
     padding: 1rem;
     background-color: var(--gray-100);
+    vertical-align: top;
 }
 
 .table tbody td {
@@ -149,7 +150,7 @@ body {
 
 .table-responsive {
     border-radius: var(--border-radius);
-    overflow: hidden;
+    overflow-x: auto;
 }
 
 /* ===== Кнопки ===== */
