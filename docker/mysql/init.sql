@@ -1,5 +1,5 @@
 CREATE DATABASE IF NOT EXISTS `att_test_db`;
-CHARACTER SET utf8mb4 
+CHARACTER SET utf8mb4;
 COLLATE utf8mb4_unicode_ci;
 
 USE `att_test_db`;

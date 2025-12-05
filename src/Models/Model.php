@@ -2,27 +2,21 @@
 
 namespace App\Models;
 
-use App\Services\Database;
-
 abstract class Model
 {
-    protected static ?Database $db = null;
     protected array $attributes = [];
-    protected bool $exists = false;
 
     public function __construct(array $attributes = [])
     {
-        if (self::$db === null) {
-            self::$db = Database::getInstance();
-        }
-
         $this->fill($attributes);
     }
 
     public function fill(array $attributes): self
     {
         foreach ($attributes as $key => $value) {
-            $this->attributes[$key] = $value;
+            if (in_array($key, $this->fillable ?? [])) {
+                $this->attributes[$key] = $value;
+            }
         }
         return $this;
     }
@@ -37,23 +31,21 @@ abstract class Model
         return $this->attributes[$key] ?? null;
     }
 
-    public function setAttribute(string $key, $value): self
-    {
-        $this->attributes[$key] = $value;
-        return $this;
-    }
-
     public function __get(string $key)
     {
+        if (method_exists($this, 'get' . ucfirst($key) . 'Attribute')) {
+            return $this->{'get' . ucfirst($key) . 'Attribute'}();
+        }
+
         return $this->getAttribute($key);
     }
 
-    public function __set(string $key, $value)
+    public function __set(string $key, $value): void
     {
-        $this->setAttribute($key, $value);
+        $this->attributes[$key] = $value;
     }
 
-    public function __isset(string $key)
+    public function __isset(string $key): bool
     {
         return isset($this->attributes[$key]);
     }

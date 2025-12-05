@@ -4,11 +4,12 @@ namespace App\Models;
 
 class Order extends Model
 {
-    protected string $table = 'orders';
-    protected array $fillable = ['title', 'cost', 'user_id'];
+    protected array $fillable = ['id', 'title', 'cost', 'user_id'];
+
+    public ?User $user = null;
 
     public function getFormattedCost(): string
     {
-        return number_format($this->cost, 2, '.', ' ') . ' BYN';
+        return number_format((float)$this->cost, 2, '.', ' ') . ' BYN';
     }
 }

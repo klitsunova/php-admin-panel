@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($title ?? 'ATT Orders') ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
@@ -12,13 +15,11 @@
                 <i class="bi bi-bag-check me-2"></i>
                 ATT Orders
             </a>
-
             <div class="d-flex align-items-center">
                 <span class="badge bg-light text-dark me-3">
                     <i class="bi bi-clock me-1"></i>
                     <?php echo date('H:i'); ?>
                 </span>
-
                 <?php if (isset($stats['total_orders'])): ?>
                 <span class="badge bg-primary">
                     <i class="bi bi-cart me-1"></i>
@@ -43,9 +44,7 @@
         </div>
     </footer>
 
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
     <script src="/assets/js/app.js"></script>
 
     <div id="loadingIndicator" class="loading-overlay" style="display: none;">

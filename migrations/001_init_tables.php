@@ -2,12 +2,20 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use App\Services\Database;
+use App\Core\Database;
 
-$db = Database::getInstance();
+$db = Database::getInstance()->getConnection();
 
 try {
-    $db->execute("
+    $db->exec("
+        CREATE DATABASE IF NOT EXISTS `att_test_db` 
+        CHARACTER SET utf8mb4 
+        COLLATE utf8mb4_unicode_ci
+    ");
+
+    $db->exec("USE `att_test_db`");
+
+    $db->exec("
         CREATE TABLE IF NOT EXISTS users (
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(100) NOT NULL,
@@ -17,7 +25,7 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
 
-    $db->execute("
+    $db->exec("
         CREATE TABLE IF NOT EXISTS orders (
             id INT AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(200) NOT NULL,
@@ -31,10 +39,10 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
 
-    $db->execute("DELETE FROM orders");
-    $db->execute("DELETE FROM users");
-    $db->execute("ALTER TABLE users AUTO_INCREMENT = 1");
-    $db->execute("ALTER TABLE orders AUTO_INCREMENT = 1");
+    $db->exec("DELETE FROM orders");
+    $db->exec("DELETE FROM users");
+    $db->exec("ALTER TABLE users AUTO_INCREMENT = 1");
+    $db->exec("ALTER TABLE orders AUTO_INCREMENT = 1");
 
     $users = [
         'Александр Иванов',
@@ -135,7 +143,7 @@ try {
     $userIds = [];
 
     foreach ($users as $name) {
-        $db->execute("INSERT INTO users (name) VALUES (?)", [$name]);
+        $db->exec("INSERT INTO users (name) VALUES (?)", [$name]);
         $userIds[] = $db->lastInsertId();
     }
 
@@ -236,7 +244,7 @@ try {
     ];
 
     foreach ($orders as $order) {
-        $db->execute(
+        $db->exec(
             "INSERT INTO orders (title, cost, user_id) VALUES (?, ?, ?)",
             $order
         );

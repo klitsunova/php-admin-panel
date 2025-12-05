@@ -57,7 +57,8 @@ class OrderTable {
 
         try {
             const queryString = new URLSearchParams(this.currentFilters).toString();
-            const response = await fetch(`/api/orders.php?${queryString}`);
+            // Меняем endpoint на /api/orders
+            const response = await fetch(`/api/orders?${queryString}`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -315,11 +316,9 @@ class OrderTable {
     }
 
     formatCurrency(amount) {
-        return new Intl.NumberFormat('ru-RU', {
-            style: 'currency',
-            currency: 'BYN',
-            minimumFractionDigits: 0
-        }).format(amount);
+        const num = parseFloat(amount);
+        return isNaN(num) ? '0.00 BYN' : 
+            num.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' BYN';
     }
 }
 

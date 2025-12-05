@@ -1,5 +1,4 @@
 <?php 
-use App\Models\User;
 
 ob_start(); ?>
 
@@ -32,7 +31,7 @@ ob_start(); ?>
                 <div class="stat-value">
                     <?php 
                         $total = $stats['total_revenue'] ?? 0;
-                        echo number_format($total, 0, '.', ' ') . ' BYN';
+                        echo number_format($total, 2, '.', ' ') . ' BYN';
                     ?>
                 </div>
                 <div class="stat-label">Общая сумма</div>
@@ -46,7 +45,7 @@ ob_start(); ?>
                 <div class="stat-value">
                     <?php 
                         $avg = $stats['avg_order_value'] ?? 0;
-                        echo number_format($avg, 0, '.', ' ') . ' BYN';
+                        echo number_format($avg, 2, '.', ' ') . ' BYN';
                     ?>
                 </div>
                 <div class="stat-label">Средний заказ</div>
@@ -194,6 +193,6 @@ ob_start(); ?>
 
 <?php
 $content = ob_get_clean();
-$title = 'Управление заказами - ATT';
+$title = $title ?? 'Управление заказами';
 require __DIR__ . '/../layout.php';
 ?>
